@@ -16,4 +16,7 @@
     <PackageReference Include="Robotico.Repository" />
     <PackageReference Include="Robotico.Result" />
   </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Robotico.Repository.MongoDb.Tests" />
+  </ItemGroup>
 </Project>

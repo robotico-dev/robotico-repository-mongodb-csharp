@@ -1,7 +1,5 @@
 using MongoDB.Driver;
 using Robotico.Domain;
-using Robotico.Repository;
-using Robotico.Result;
 using Robotico.Result.Errors;
 
 namespace Robotico.Repository.MongoDb;
@@ -38,7 +36,7 @@ public sealed class MongoDbRepository<TEntity, TId>(IMongoCollection<TEntity> co
         }
         catch (MongoException ex)
         {
-            return Robotico.Result.Result.Error<TEntity>(new Robotico.Result.Errors.ExceptionError(ex));
+            return MongoDbRepositoryMongoExceptionRouter.MapAfterGetById<TEntity, TId>(ex, id);
         }
     }
 
@@ -60,13 +58,9 @@ public sealed class MongoDbRepository<TEntity, TId>(IMongoCollection<TEntity> co
 
             return Robotico.Result.Result.Success();
         }
-        catch (MongoWriteException ex) when (ex.WriteError?.Code == 11000)
-        {
-            return Robotico.Result.Result.Error(new SimpleError($"Entity with id '{entity.Id}' already exists.", "DUPLICATE"));
-        }
         catch (MongoException ex)
         {
-            return Robotico.Result.Result.Error(new Robotico.Result.Errors.ExceptionError(ex));
+            return MongoDbRepositoryMongoExceptionRouter.MapAfterAdd<TEntity, TId>(ex, entity);
         }
     }
 
@@ -87,7 +81,7 @@ public sealed class MongoDbRepository<TEntity, TId>(IMongoCollection<TEntity> co
         }
         catch (MongoException ex)
         {
-            return Robotico.Result.Result.Error(new Robotico.Result.Errors.ExceptionError(ex));
+            return MongoDbRepositoryMongoExceptionRouter.MapAfterReplace<TEntity, TId>(ex, entity);
         }
     }
 
@@ -108,7 +102,7 @@ public sealed class MongoDbRepository<TEntity, TId>(IMongoCollection<TEntity> co
         }
         catch (MongoException ex)
         {
-            return Robotico.Result.Result.Error(new Robotico.Result.Errors.ExceptionError(ex));
+            return MongoDbRepositoryMongoExceptionRouter.MapAfterDelete<TEntity, TId>(ex, entity);
         }
     }
 }

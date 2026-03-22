@@ -1,6 +1,4 @@
 using MongoDB.Driver;
-using Robotico.Repository;
-using Robotico.Result;
 using Robotico.Result.Errors;
 
 namespace Robotico.Repository.MongoDb;
@@ -20,11 +18,11 @@ public sealed class MongoDbUnitOfWork(IClientSessionHandle session) : IUnitOfWor
         try
         {
             await session.CommitTransactionAsync(cancellationToken).ConfigureAwait(false);
-            return Result.Success();
+            return Robotico.Result.Result.Success();
         }
         catch (MongoException ex)
         {
-            return Result.Error(new ExceptionError(ex));
+            return Robotico.Result.Result.Error(new ExceptionError(ex));
         }
     }
 }

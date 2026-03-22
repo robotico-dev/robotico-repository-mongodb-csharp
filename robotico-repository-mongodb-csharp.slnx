@@ -3,4 +3,7 @@
   <Folder Name="/src/">
     <Project Path="src/Robotico.Repository.MongoDb/Robotico.Repository.MongoDb.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Robotico.Repository.MongoDb.Tests/Robotico.Repository.MongoDb.Tests.csproj" />
+  </Folder>
 </Solution>
