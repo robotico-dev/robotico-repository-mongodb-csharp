@@ -24,5 +24,9 @@ public sealed class MongoDbUnitOfWork(IClientSessionHandle session) : IUnitOfWor
         {
             return Robotico.Result.Result.Error(new ExceptionError(ex));
         }
+        catch (InvalidOperationException ex)
+        {
+            return Robotico.Result.Result.Error(new ExceptionError(ex));
+        }
     }
 }
