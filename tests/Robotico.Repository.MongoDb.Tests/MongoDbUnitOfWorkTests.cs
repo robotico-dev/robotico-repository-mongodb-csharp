@@ -1,4 +1,5 @@
 using MongoDB.Driver;
+using Robotico.Result.Errors;
 using Xunit;
 
 namespace Robotico.Repository.MongoDb.Tests;
@@ -48,5 +49,19 @@ public sealed class MongoDbUnitOfWorkTests
         await cts.CancelAsync();
 
         await Assert.ThrowsAsync<OperationCanceledException>(() => uow.CommitAsync(cts.Token));
+    }
+
+    [Fact]
+    public async Task CommitAsync_returns_ExceptionError_when_transaction_was_aborted()
+    {
+        IClientSessionHandle session = await _fixture.Client.StartSessionAsync();
+        session.StartTransaction();
+        await session.AbortTransactionAsync();
+        MongoDbUnitOfWork uow = new(session);
+
+        Robotico.Result.Result r = await uow.CommitAsync();
+
+        Assert.True(r.IsError(out IError? err));
+        Assert.IsType<ExceptionError>(err);
     }
 }

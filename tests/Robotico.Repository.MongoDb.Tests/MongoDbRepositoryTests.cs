@@ -67,6 +67,38 @@ public sealed class MongoDbRepositoryTests
     }
 
     [Fact]
+    public void Update_success_when_entity_exists()
+    {
+        IMongoDatabase database = _fixture.Client.GetDatabase(NewDatabaseName());
+        IMongoCollection<SampleEntity> collection = database.GetCollection<SampleEntity>("entities");
+        MongoDbRepository<SampleEntity, Guid> repo = new(collection, null);
+        SampleEntity entity = new() { Id = Guid.NewGuid() };
+        Assert.True(repo.Add(entity).IsSuccess());
+
+        Robotico.Result.Result updated = repo.Update(new SampleEntity { Id = entity.Id });
+
+        Assert.True(updated.IsSuccess());
+        Assert.True(repo.GetById(entity.Id).IsSuccess(out SampleEntity? loaded));
+        Assert.Equal(entity.Id, loaded!.Id);
+    }
+
+    [Fact]
+    public void Remove_success_when_entity_exists()
+    {
+        IMongoDatabase database = _fixture.Client.GetDatabase(NewDatabaseName());
+        IMongoCollection<SampleEntity> collection = database.GetCollection<SampleEntity>("entities");
+        MongoDbRepository<SampleEntity, Guid> repo = new(collection, null);
+        SampleEntity entity = new() { Id = Guid.NewGuid() };
+        Assert.True(repo.Add(entity).IsSuccess());
+
+        Robotico.Result.Result removed = repo.Remove(entity);
+
+        Assert.True(removed.IsSuccess());
+        Assert.True(repo.GetById(entity.Id).IsError(out IError? err));
+        Assert.Equal("NOT_FOUND", err!.Code);
+    }
+
+    [Fact]
     public void Update_returns_NOT_FOUND_when_missing()
     {
         IMongoDatabase database = _fixture.Client.GetDatabase(NewDatabaseName());
@@ -112,5 +144,25 @@ public sealed class MongoDbRepositoryTests
         MongoDbRepository<SampleEntity, Guid> repo = new(collection, null);
 
         Assert.Throws<ArgumentNullException>(() => repo.Add(null!));
+    }
+
+    [Fact]
+    public void Update_throws_ArgumentNullException_when_entity_is_null()
+    {
+        IMongoDatabase database = _fixture.Client.GetDatabase(NewDatabaseName());
+        IMongoCollection<SampleEntity> collection = database.GetCollection<SampleEntity>("entities");
+        MongoDbRepository<SampleEntity, Guid> repo = new(collection, null);
+
+        Assert.Throws<ArgumentNullException>(() => repo.Update(null!));
+    }
+
+    [Fact]
+    public void Remove_throws_ArgumentNullException_when_entity_is_null()
+    {
+        IMongoDatabase database = _fixture.Client.GetDatabase(NewDatabaseName());
+        IMongoCollection<SampleEntity> collection = database.GetCollection<SampleEntity>("entities");
+        MongoDbRepository<SampleEntity, Guid> repo = new(collection, null);
+
+        Assert.Throws<ArgumentNullException>(() => repo.Remove(null!));
     }
 }
