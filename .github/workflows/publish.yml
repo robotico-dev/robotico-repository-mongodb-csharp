@@ -19,14 +19,10 @@ env:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    services:
-      mongodb:
-        image: mongo:7
-        ports:
-          - 27017:27017
+    # Tests use Testcontainers with a single-node replica set so MongoDB transactions (MongoDbUnitOfWorkTests) work.
+    # A standalone mongo:7 service does not support transactions and breaks those tests.
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
-      ROBOTICO_MONGO_CONNECTION: mongodb://127.0.0.1:27017
     strategy:
       matrix:
         dotnet-version: [ "8.0.x", "10.0.x" ]
