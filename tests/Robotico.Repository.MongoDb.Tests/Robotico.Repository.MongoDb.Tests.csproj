@@ -5,7 +5,8 @@
     <PackageId>Robotico.Repository.MongoDb.Tests</PackageId>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
-    <NoWarn>$(NoWarn);CA1707;CA1515;CA1711;CA2007;IDE0005;IDE0090</NoWarn>
+    <!-- CA1849: transaction tests keep sync IRepository calls alongside async CommitAsync. -->
+    <NoWarn>$(NoWarn);CA1707;CA1515;CA1711;CA2007;CA1849;IDE0005;IDE0090</NoWarn>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <CoverletOutputFormat>cobertura</CoverletOutputFormat>
   </PropertyGroup>

@@ -1,6 +1,23 @@
 # Robotico.Repository.MongoDb
 
-`IRepository<TEntity, TId>` and `IUnitOfWork` backed by MongoDB.Driver using `IMongoCollection<TEntity>` and optional `IClientSessionHandle`.
+`IRepository<TEntity, TId>`, `IAsyncRepository<TEntity, TId>`, and `IUnitOfWork` backed by MongoDB.Driver using `IMongoCollection<TEntity>` and optional `IClientSessionHandle`.
+
+## Which interface?
+
+| Host / scenario | Prefer |
+|-----------------|--------|
+| ASP.NET Core, workers | `IAsyncRepository<,>` |
+| Legacy synchronous usage | `IRepository<,>` |
+
+## Unit of work profile (`IUnitOfWorkCapabilities`)
+
+Applies to `MongoDbUnitOfWork` (session transaction). Without a session, repository writes are immediate per operation.
+
+| | |
+|--|--|
+| `UnitOfWorkCommitMode` | `SessionScopedTransaction` |
+| `CommitCoordinatesDomainWrites` | yes when using a session + `MongoDbUnitOfWork` |
+| `SupportsTransactions` | yes |
 
 [![.NET 8](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/download/dotnet/8.0)
 [![.NET 10](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/download/dotnet/10.0)

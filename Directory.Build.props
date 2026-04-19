@@ -9,7 +9,7 @@
   <Import Project="$(_RoboticoSharedMsbuildImport)" Condition="'$(_RoboticoSharedMsbuildImport)' != ''" />
 
   <PropertyGroup>
-    <Version>0.1.0</Version>
+    <Version>0.1.1</Version>
     <Product>Robotico.Repository.MongoDb</Product>
     <PackageId>Robotico.Repository.MongoDb</PackageId>
     <Title>Robotico.Repository.MongoDb</Title>

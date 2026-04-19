@@ -13,7 +13,7 @@ namespace Robotico.Repository.MongoDb;
 /// </remarks>
 /// <typeparam name="TEntity">The entity type (must implement <see cref="IEntity{TId}"/>).</typeparam>
 /// <typeparam name="TId">The type of the entity identifier.</typeparam>
-public sealed class MongoDbRepository<TEntity, TId>(IMongoCollection<TEntity> collection, IClientSessionHandle? session = null) : IRepository<TEntity, TId>
+public sealed class MongoDbRepository<TEntity, TId>(IMongoCollection<TEntity> collection, IClientSessionHandle? session = null) : IRepository<TEntity, TId>, IAsyncRepository<TEntity, TId>
     where TEntity : IEntity<TId>
     where TId : notnull
 {
@@ -96,6 +96,89 @@ public sealed class MongoDbRepository<TEntity, TId>(IMongoCollection<TEntity> co
             DeleteResult result = session is null
                 ? collection.DeleteOne(filter)
                 : collection.DeleteOne(session, filter);
+            return result.DeletedCount > 0
+                ? Robotico.Result.Result.Success()
+                : Robotico.Result.Result.Error(new SimpleError($"Entity with id '{entity.Id}' not found.", "NOT_FOUND"));
+        }
+        catch (MongoException ex)
+        {
+            return MongoDbRepositoryMongoExceptionRouter.MapAfterDelete<TEntity, TId>(ex, entity);
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<Robotico.Result.Result<TEntity>> GetByIdAsync(TId id, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(id);
+        try
+        {
+            FilterDefinition<TEntity> filter = F.Eq(x => x.Id, id);
+            TEntity? entity = session is null
+                ? await collection.Find(filter).FirstOrDefaultAsync(cancellationToken).ConfigureAwait(false)
+                : await collection.Find(session, filter).FirstOrDefaultAsync(cancellationToken).ConfigureAwait(false);
+            return entity is null
+                ? Robotico.Result.Result.Error<TEntity>(new SimpleError($"Entity with id '{id}' not found.", "NOT_FOUND"))
+                : Robotico.Result.Result.Success(entity);
+        }
+        catch (MongoException ex)
+        {
+            return MongoDbRepositoryMongoExceptionRouter.MapAfterGetById<TEntity, TId>(ex, id);
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<Robotico.Result.Result> AddAsync(TEntity entity, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(entity);
+        try
+        {
+            if (session is null)
+            {
+                await collection.InsertOneAsync(entity, cancellationToken: cancellationToken).ConfigureAwait(false);
+            }
+            else
+            {
+                await collection.InsertOneAsync(session, entity, cancellationToken: cancellationToken).ConfigureAwait(false);
+            }
+
+            return Robotico.Result.Result.Success();
+        }
+        catch (MongoException ex)
+        {
+            return MongoDbRepositoryMongoExceptionRouter.MapAfterAdd<TEntity, TId>(ex, entity);
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<Robotico.Result.Result> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(entity);
+        try
+        {
+            FilterDefinition<TEntity> filter = F.Eq(x => x.Id, entity.Id);
+            ReplaceOneResult result = session is null
+                ? await collection.ReplaceOneAsync(filter, entity, cancellationToken: cancellationToken).ConfigureAwait(false)
+                : await collection.ReplaceOneAsync(session, filter, entity, cancellationToken: cancellationToken).ConfigureAwait(false);
+            return result.MatchedCount > 0
+                ? Robotico.Result.Result.Success()
+                : Robotico.Result.Result.Error(new SimpleError($"Entity with id '{entity.Id}' not found.", "NOT_FOUND"));
+        }
+        catch (MongoException ex)
+        {
+            return MongoDbRepositoryMongoExceptionRouter.MapAfterReplace<TEntity, TId>(ex, entity);
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<Robotico.Result.Result> RemoveAsync(TEntity entity, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(entity);
+        try
+        {
+            FilterDefinition<TEntity> filter = F.Eq(x => x.Id, entity.Id);
+            DeleteResult result = session is null
+                ? await collection.DeleteOneAsync(filter, cancellationToken: cancellationToken).ConfigureAwait(false)
+                : await collection.DeleteOneAsync(session, filter, cancellationToken: cancellationToken).ConfigureAwait(false);
             return result.DeletedCount > 0
                 ? Robotico.Result.Result.Success()
                 : Robotico.Result.Result.Error(new SimpleError($"Entity with id '{entity.Id}' not found.", "NOT_FOUND"));

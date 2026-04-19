@@ -9,8 +9,16 @@ namespace Robotico.Repository.MongoDb;
 /// <remarks>
 /// <para>Start the session with <c>client.StartSession()</c> and <c>session.StartTransaction()</c> before using repositories. Pass the same session to <see cref="MongoDbRepository{TEntity, TId}"/> and to this UoW. Call <see cref="IUnitOfWork.CommitAsync"/> to commit the transaction.</para>
 /// </remarks>
-public sealed class MongoDbUnitOfWork(IClientSessionHandle session) : IUnitOfWork
+public sealed class MongoDbUnitOfWork(IClientSessionHandle session) : IUnitOfWork, IUnitOfWorkCapabilities
 {
+    private static readonly UnitOfWorkProfile UnitOfWorkProfileValue = new(
+        UnitOfWorkCommitMode.SessionScopedTransaction,
+        CommitCoordinatesDomainWrites: true,
+        SupportsTransactions: true);
+
+    /// <inheritdoc />
+    public UnitOfWorkProfile Capabilities => UnitOfWorkProfileValue;
+
     /// <inheritdoc />
     public async Task<Robotico.Result.Result> CommitAsync(CancellationToken cancellationToken = default)
     {
