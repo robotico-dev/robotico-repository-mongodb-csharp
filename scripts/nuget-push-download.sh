@@ -3,7 +3,7 @@
 # Existing version → warning only (exit 0).
 set -euo pipefail
 
-NUGET_SOURCE="${NUGET_PUSH_SOURCE:-https://download.robotico.dev/api/v3/index.json}"
+NUGET_SOURCE="${NUGET_PUSH_SOURCE:-https://download.robotico.dev/nuget/v3/index.json}"
 API_KEY="${PUBLISH_TOKEN:?Set PUBLISH_TOKEN (Woodpecker secret publish_token)}"
 DIR="${1:-./nupkgs}"
 
