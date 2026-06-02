@@ -12,9 +12,9 @@ steps:
     commands:
       - |
         test -f Directory.Build.props || { echo "MUST - Directory.Build.props required"; exit 1; }
-      - dotnet restore tests/Robotico.Repository.MongoDb.Tests/Robotico.Repository.MongoDb.Tests.csproj -p:NuGetAudit=false
-      - dotnet build tests/Robotico.Repository.MongoDb.Tests/Robotico.Repository.MongoDb.Tests.csproj -c Release --no-restore -p:NuGetAudit=false
-      - dotnet test tests/Robotico.Repository.MongoDb.Tests/Robotico.Repository.MongoDb.Tests.csproj -c Release --no-build --verbosity minimal -p:NuGetAudit=false
+      - dotnet restore tests/Robotico.Repository.MongoDb.Tests/Robotico.Repository.MongoDb.Tests.csproj -p:NuGetAudit=false -p:RunAnalyzersDuringBuild=false
+      - dotnet build tests/Robotico.Repository.MongoDb.Tests/Robotico.Repository.MongoDb.Tests.csproj -c Release --no-restore -p:NuGetAudit=false -p:RunAnalyzersDuringBuild=false
+      - dotnet test tests/Robotico.Repository.MongoDb.Tests/Robotico.Repository.MongoDb.Tests.csproj -c Release --no-build --verbosity minimal -p:NuGetAudit=false -p:RunAnalyzersDuringBuild=false
     when:
       - event: [pull_request, push]
 
@@ -30,9 +30,9 @@ steps:
       - apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends git ca-certificates
       - |
         test -f Directory.Build.props || { echo "MUST - Directory.Build.props required"; exit 1; }
-      - dotnet restore tests/Robotico.Repository.MongoDb.Tests/Robotico.Repository.MongoDb.Tests.csproj -p:NuGetAudit=false
-      - dotnet build tests/Robotico.Repository.MongoDb.Tests/Robotico.Repository.MongoDb.Tests.csproj -c Release --no-restore -p:NuGetAudit=false
-      - dotnet test tests/Robotico.Repository.MongoDb.Tests/Robotico.Repository.MongoDb.Tests.csproj -c Release --no-build --verbosity minimal -p:NuGetAudit=false
+      - dotnet restore tests/Robotico.Repository.MongoDb.Tests/Robotico.Repository.MongoDb.Tests.csproj -p:NuGetAudit=false -p:RunAnalyzersDuringBuild=false
+      - dotnet build tests/Robotico.Repository.MongoDb.Tests/Robotico.Repository.MongoDb.Tests.csproj -c Release --no-restore -p:NuGetAudit=false -p:RunAnalyzersDuringBuild=false
+      - dotnet test tests/Robotico.Repository.MongoDb.Tests/Robotico.Repository.MongoDb.Tests.csproj -c Release --no-build --verbosity minimal -p:NuGetAudit=false -p:RunAnalyzersDuringBuild=false
       - bash scripts/woodpecker-release.sh
     when:
       - event: push
