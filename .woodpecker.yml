@@ -9,6 +9,8 @@ when:
 steps:
   restore-build-test:
     image: mcr.microsoft.com/dotnet/sdk:10.0
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
     commands:
       - |
         test -f Directory.Build.props || { echo "MUST - Directory.Build.props required"; exit 1; }
@@ -20,6 +22,8 @@ steps:
 
   release:
     image: mcr.microsoft.com/dotnet/sdk:10.0
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
     environment:
       PUBLISH_TOKEN:
         from_secret: publish_token
