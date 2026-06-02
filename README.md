@@ -1,4 +1,6 @@
 # Robotico.Repository.MongoDb
+[![Woodpecker CI](https://dvalin.robotico.dev/api/badges/robotico/robotico-repository-mongodb-csharp/status.svg)](https://dvalin.robotico.dev/robotico/robotico-repository-mongodb-csharp)
+
 
 `IRepository<TEntity, TId>`, `IAsyncRepository<TEntity, TId>`, and `IUnitOfWork` backed by MongoDB.Driver using `IMongoCollection<TEntity>` and optional `IClientSessionHandle`.
 
