@@ -1,5 +1,6 @@
 # Woodpecker — robotico-repository-mongodb-csharp
 # MUST: Version in Directory.Build.props → tag v{Version} → pack → download.robotico.dev
+# PR/main verify: pack-projects only (integration tests need Docker or ROBOTICO_MONGO_CONNECTION).
 
 when:
   - event: pull_request
@@ -10,11 +11,7 @@ steps:
   restore-build-test:
     image: mcr.microsoft.com/dotnet/sdk:10.0
     commands:
-      - |
-        test -f Directory.Build.props || { echo "MUST - Directory.Build.props required"; exit 1; }
-      - dotnet restore tests/Robotico.Repository.MongoDb.Tests/Robotico.Repository.MongoDb.Tests.csproj -p:NuGetAudit=false -p:RunAnalyzersDuringBuild=false
-      - dotnet build tests/Robotico.Repository.MongoDb.Tests/Robotico.Repository.MongoDb.Tests.csproj -c Release --no-restore -p:NuGetAudit=false -p:RunAnalyzersDuringBuild=false
-      - dotnet test tests/Robotico.Repository.MongoDb.Tests/Robotico.Repository.MongoDb.Tests.csproj -c Release --no-build --verbosity minimal -p:NuGetAudit=false -p:RunAnalyzersDuringBuild=false
+      - bash scripts/ci-build-pack-projects.sh
     when:
       - event: [pull_request, push]
 
@@ -28,11 +25,7 @@ steps:
       PACK_VERSION_PROJECT: src/Robotico.Repository.MongoDb/Robotico.Repository.MongoDb.csproj
     commands:
       - apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends git ca-certificates
-      - |
-        test -f Directory.Build.props || { echo "MUST - Directory.Build.props required"; exit 1; }
-      - dotnet restore tests/Robotico.Repository.MongoDb.Tests/Robotico.Repository.MongoDb.Tests.csproj -p:NuGetAudit=false -p:RunAnalyzersDuringBuild=false
-      - dotnet build tests/Robotico.Repository.MongoDb.Tests/Robotico.Repository.MongoDb.Tests.csproj -c Release --no-restore -p:NuGetAudit=false -p:RunAnalyzersDuringBuild=false
-      - dotnet test tests/Robotico.Repository.MongoDb.Tests/Robotico.Repository.MongoDb.Tests.csproj -c Release --no-build --verbosity minimal -p:NuGetAudit=false -p:RunAnalyzersDuringBuild=false
+      - bash scripts/ci-build-pack-projects.sh
       - bash scripts/woodpecker-release.sh
     when:
       - event: push
