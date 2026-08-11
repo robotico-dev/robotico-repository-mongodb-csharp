@@ -1,6 +1,11 @@
 # Robotico.Repository.MongoDb
-[![Woodpecker CI](https://dvalin.robotico.dev/api/badges/robotico/robotico-repository-mongodb-csharp/status.svg)](https://dvalin.robotico.dev/robotico/robotico-repository-mongodb-csharp)
 
+**Tech stack**
+
+[![.NET 8](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/download/dotnet/8.0)
+[![.NET 10](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/download/dotnet/10.0)
+[![C#](https://img.shields.io/badge/C%23-12-239120?logo=csharp)](https://learn.microsoft.com/en-us/dotnet/csharp/)
+[![GitHub Packages](https://img.shields.io/badge/GitHub%20Packages-Robotico.Repository.MongoDb-blue?logo=github)](https://github.com/robotico-dev/robotico-repository-mongodb-csharp/packages)
 
 `IRepository<TEntity, TId>`, `IAsyncRepository<TEntity, TId>`, and `IUnitOfWork` backed by MongoDB.Driver using `IMongoCollection<TEntity>` and optional `IClientSessionHandle`.
 
@@ -21,10 +26,6 @@ Applies to `MongoDbUnitOfWork` (session transaction). Without a session, reposit
 | `CommitCoordinatesDomainWrites` | yes when using a session + `MongoDbUnitOfWork` |
 | `SupportsTransactions` | yes |
 
-[![.NET 8](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/download/dotnet/8.0)
-[![.NET 10](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/download/dotnet/10.0)
-[![C#](https://img.shields.io/badge/C%23-12-239120?logo=csharp)](https://learn.microsoft.com/en-us/dotnet/csharp/)
-[![GitHub Packages](https://img.shields.io/badge/GitHub%20Packages-Robotico.Repository.MongoDb-blue?logo=github)](https://github.com/robotico-dev/robotico-repository-mongodb-csharp/packages)
 
 ## Session and transaction
 

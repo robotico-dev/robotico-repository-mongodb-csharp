@@ -9,11 +9,18 @@
   <Import Project="$(_RoboticoSharedMsbuildImport)" Condition="'$(_RoboticoSharedMsbuildImport)' != ''" />
 
   <PropertyGroup>
-    <Version>0.1.1</Version>
+    <Version>0.1.4</Version>
     <Product>Robotico.Repository.MongoDb</Product>
     <PackageId>Robotico.Repository.MongoDb</PackageId>
     <Title>Robotico.Repository.MongoDb</Title>
     <Description>IRepository and IUnitOfWork backed by MongoDB.Driver using IMongoCollection and optional IClientSessionHandle. Depends on Robotico.Repository, Robotico.Domain, Robotico.Result, MongoDB.Driver.</Description>
     <PackageTags>repository;mongodb;robotico</PackageTags>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageIcon>logosquare.png</PackageIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)assets\logosquare.png" Pack="true" PackagePath="\" Link="logosquare.png" Visible="false" />
+  </ItemGroup>
 </Project>
